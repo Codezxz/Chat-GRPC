@@ -1,9 +1,11 @@
+import os
 import subprocess
 import time
 
 def run_uvicorn():
+    port = os.environ.get("PORT", "8000")
     return subprocess.Popen(
-        ["uvicorn", "server_ws_chat:app", "--reload", "--port", "8000"]
+        ["uvicorn", "server_ws_chat:app", "--host", "0.0.0.0", "--port", port]
     )
 
 def run_python_server():
@@ -16,16 +18,13 @@ if __name__ == "__main__":
     chat_process = run_python_server()
 
     try:
-        # Wait for both processes to finish (which normally doesn't happen unless terminated)
         uvicorn_process.wait()
         chat_process.wait()
     except KeyboardInterrupt:
         print("\nShutting down servers...")
 
-        # Gracefully terminate both processes
         uvicorn_process.terminate()
         chat_process.terminate()
 
-        # Wait a moment to ensure they are stopped
         time.sleep(1)
         print("Servers stopped.")
