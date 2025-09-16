@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Async Chat</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #messages { list-style-type: none; padding: 0; max-height: 400px; overflow-y: auto; border: 1px solid #ccc; margin-top: 10px; }
+        #messages li { padding: 5px; margin-bottom: 5px; border-radius: 5px; }
+        .username { font-weight: bold; margin-right: 5px; }
+        .timestamp { font-size: 0.8em; color: gray; margin-left: 5px; }
+        .user-Kristina { background-color: #d1e7dd; }
+        .user-Nirnay { background-color: #ffe5d9; }
+        .user-User { background-color: #cfe2ff; }
+        /* Default color if user not known */
+        .user-default { background-color: #f8d7da; }
+    </style>
+</head>
+<body>
+    <h2>WebSocket Chat</h2>
+    <input id="username" placeholder="Username">
+    <input id="message" placeholder="Message">
+    <button onclick="sendMessage()">Send</button>
+    <ul id="messages"></ul>
+
+    <script>
+        const ws = new WebSocket("ws://127.0.0.1:8000/chat");
+
+        // Map to assign user-specific classes dynamically
+        const userClasses = {};
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const li = document.createElement("li");
+
+            // Determine class based on username
+            const username = data.username || "Unknown";
+            const userClass = "user-" + username.replace(/\s+/g, '') || "user-default";
+            li.className = userClass;
+
+            // Generate timestamp
+            const now = new Date();
+            const timestamp = now.toLocaleTimeString();
+
+            li.innerHTML = `<span class="username">${username}:</span> ${data.message} <span class="timestamp">${timestamp}</span>`;
+            document.getElementById("messages").appendChild(li);
+
+            // Auto-scroll to latest
+            const messagesDiv = document.getElementById("messages");
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        };
+
+        function sendMessage() {
+            const username = document.getElementById("username").value.trim() || "User";
+            const message = document.getElementById("message").value.trim();
+            if (!message) return;
+
+            ws.send(JSON.stringify({username, message}));
+            document.getElementById("message").value = "";
+        }
+    </script>
+</body>
+</html>
