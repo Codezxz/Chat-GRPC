@@ -1,4 +1,4 @@
-# Chat-GRPC (Refactor)
+# Chat-GRPC
 
 ## Features
 - Async gRPC server using `grpc.aio`
