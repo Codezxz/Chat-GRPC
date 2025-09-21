@@ -1,13 +1,13 @@
 syntax = "proto3";
 package chat;
 
-import "google/protobuf/wrappers.proto";
-
-service ChatService{
-  rpc ChatStream(stream ChatMessage) returns (stream ChatMessage);
+service ChatService {
+  rpc Chat(stream ChatMessage) returns (stream ChatMessage) {}
 }
 
-message ChatMessage{
-  google.protobuf.StringValue username = 1;
-  google.protobuf.StringValue message = 2;
+message ChatMessage {
+  string user = 1;
+  string text = 2;
+  int64 ts = 3;
+  string id = 4;
 }
