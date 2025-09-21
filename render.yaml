@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: chat-grpc
+    env: python
+    buildCommand: "pip install -r requirements.txt && python -m grpc_tools.protoc -I./proto --python_out=./generated --grpc_python_out=./generated proto/chat.proto"
+    startCommand: "python -m server.grpc_server & uvicorn bridge.app:app --host 0.0.0.0 --port 10000"
+    plan: free
+    autoDeploy: true
