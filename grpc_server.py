@@ -1,6 +1,6 @@
 import os, asyncio, signal, logging
 import grpc
-from generated import chat_pb2_grpc
+from generated import chat_pb2, chat_pb2_grpc
 from server.service import ChatServicer
 
 async def serve():
